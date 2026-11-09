@@ -3,12 +3,19 @@
  */
 package projetsperso;
 
+import projetsperso.dorsal.DorsalApp;
+import projetsperso.frontal.FrontalApp;
+
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
+
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        // System.out.println(new App().getGreeting());
+        FrontalApp frontend = new FrontalApp();
+        DorsalApp dorsalApp = new DorsalApp();
+        frontend.setupFrontend();
+        dorsalApp.setupBackend();
     }
+
+    
 }
