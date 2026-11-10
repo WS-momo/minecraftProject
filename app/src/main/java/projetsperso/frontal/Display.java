@@ -15,8 +15,8 @@ import projetsperso.commun.graphisme.Render;
 // https://www.youtube.com/watch?v=bKbZECPjQs0&list=PL656DADE0DA25ADBB&index=4
 
 public class Display extends Canvas implements Runnable {
-    public static final int WIDTH = 1000;
-    public static final int HEIGHT = 800;
+    public static final int WIDTH = 800;
+    public static final int HEIGHT = 600;
     private Thread thread;
     private boolean running = false;
     private Render render;
@@ -54,9 +54,34 @@ public class Display extends Canvas implements Runnable {
     }
 
     public void run() {
+        int frames = 0;
+        double unprocessedSeconds = 0;
+        long previousTime = System.nanoTime();
+        double secondsPerTick = 1 / 60.0;
+        int tickCount = 0;
+        boolean ticked = false;
         while (running) {
-            tick();
+            long currentTime = System.nanoTime();
+            long passedTime = currentTime - previousTime;
+            previousTime = currentTime;
+            unprocessedSeconds += passedTime / 1000000000.0;
+            while (unprocessedSeconds > secondsPerTick) {
+                tick();
+                unprocessedSeconds -= secondsPerTick;
+                ticked = true;
+                tickCount++;
+                if (tickCount % 60 == 0) {
+                    System.out.println(frames + "fps");
+                    previousTime += 1000;
+                    frames = 0;
+                }
+            }
+            if (ticked == true) {
+                render();
+                frames++;
+            }
             render();
+            frames++;
         }
     }
 
@@ -76,7 +101,7 @@ public class Display extends Canvas implements Runnable {
             pixels[i] = ecran.pixels[i];
         }
         Graphics g = bs.getDrawGraphics();
-        g.drawImage(img, 0, 0, WIDTH * 20, HEIGHT * 20, null);
+        g.drawImage(img, 0, 0, WIDTH, HEIGHT, null);
         g.dispose();
         bs.show();
     }
