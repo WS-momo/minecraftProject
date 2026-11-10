@@ -1,4 +1,4 @@
-package projetsperso.frontal.vue;
+package projetsperso.frontal.vues;
 
 import javax.swing.JFrame;
 

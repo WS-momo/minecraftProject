@@ -4,18 +4,16 @@
 package projetsperso;
 
 import projetsperso.dorsal.DorsalApp;
-import projetsperso.frontal.FrontalApp;
+import projetsperso.frontal.Display;
 
 public class App {
 
-
     public static void main(String[] args) {
         // System.out.println(new App().getGreeting());
-        FrontalApp frontend = new FrontalApp();
+        Display display = new Display();
         DorsalApp dorsalApp = new DorsalApp();
-        frontend.setupFrontend();
+        display.setupFrontend();
         dorsalApp.setupBackend();
     }
 
-    
 }
