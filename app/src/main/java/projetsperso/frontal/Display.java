@@ -1,9 +1,18 @@
 package projetsperso.frontal;
 
 import java.awt.Canvas;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferInt;
+
 import javax.swing.JFrame;
 
+import projetsperso.commun.graphisme.Ecran;
 import projetsperso.commun.graphisme.Render;
+
+// https://www.youtube.com/watch?v=bKbZECPjQs0&list=PL656DADE0DA25ADBB&index=4
 
 public class Display extends Canvas implements Runnable {
     public static final int WIDTH = 1000;
@@ -11,9 +20,14 @@ public class Display extends Canvas implements Runnable {
     private Thread thread;
     private boolean running = false;
     private Render render;
+    private Ecran ecran;
+    private BufferedImage img;
+    private int[] pixels;
 
     public Display() {
-        render = new Render(WIDTH, HEIGHT);
+        ecran = new Ecran(WIDTH, HEIGHT);
+        img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
     }
 
     private void start() {
@@ -51,7 +65,20 @@ public class Display extends Canvas implements Runnable {
     }
 
     private void render() {
+        BufferStrategy bs = this.getBufferStrategy();
+        if (bs == null) {
+            createBufferStrategy(3);
+            return;
+        }
 
+        ecran.render();
+        for (int i = 0; i < WIDTH * HEIGHT; i++) {
+            pixels[i] = ecran.pixels[i];
+        }
+        Graphics g = bs.getDrawGraphics();
+        g.drawImage(img, 0, 0, WIDTH * 20, HEIGHT * 20, null);
+        g.dispose();
+        bs.show();
     }
 
     public void setupFrontend() {
