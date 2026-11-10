@@ -1,7 +1,9 @@
 package projetsperso.frontal;
 
 import java.awt.Canvas;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.HeadlessException;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
@@ -10,6 +12,7 @@ import java.awt.image.DataBufferInt;
 import javax.swing.JFrame;
 
 import projetsperso.commun.graphisme.Ecran;
+import projetsperso.commun.graphisme.Jeu;
 import projetsperso.commun.graphisme.Render;
 
 // https://www.youtube.com/watch?v=bKbZECPjQs0&list=PL656DADE0DA25ADBB&index=4
@@ -20,12 +23,18 @@ public class Display extends Canvas implements Runnable {
     private Thread thread;
     private boolean running = false;
     private Render render;
+    private Jeu jeu;
     private Ecran ecran;
     private BufferedImage img;
     private int[] pixels;
 
     public Display() {
+        Dimension size = new Dimension(WIDTH, HEIGHT);
+        setPreferredSize(size);
+        setMinimumSize(size);
+        setMaximumSize(size);
         ecran = new Ecran(WIDTH, HEIGHT);
+        jeu = new Jeu();
         img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
     }
@@ -86,7 +95,7 @@ public class Display extends Canvas implements Runnable {
     }
 
     private void tick() {
-
+        jeu.tick();
     }
 
     private void render() {
@@ -96,12 +105,12 @@ public class Display extends Canvas implements Runnable {
             return;
         }
 
-        ecran.render();
+        ecran.render(jeu);
         for (int i = 0; i < WIDTH * HEIGHT; i++) {
             pixels[i] = ecran.pixels[i];
         }
         Graphics g = bs.getDrawGraphics();
-        g.drawImage(img, 0, 0, WIDTH, HEIGHT, null);
+        g.drawImage(img, 0, 0, WIDTH + 10, HEIGHT + 10, null);
         g.dispose();
         bs.show();
     }
@@ -112,7 +121,7 @@ public class Display extends Canvas implements Runnable {
         window.add(jeu);
         window.pack();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setSize(WIDTH, HEIGHT);
+
         window.setResizable(true);
         window.setTitle("Minecraft 3d");
         window.setLocationRelativeTo(null);

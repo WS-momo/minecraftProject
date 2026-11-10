@@ -1,7 +1,5 @@
 package projetsperso.commun.graphisme;
 
-import projetsperso.frontal.Display;
-
 public class Render {
 
     public final int width;
